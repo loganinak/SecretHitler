@@ -14,8 +14,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/playerCount"
+        android:spinnerMode="dropdown"
+        android:layout_marginTop="66dp"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Game"
+        android:id="@+id/startGame"
+        android:layout_marginTop="45dp"
+        android:onClick="launchGame"
+        android:layout_below="@+id/playerCount"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Number of Players"
+        android:id="@+id/textView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="62dp"
-        android:spinnerMode="dropdown" />
+        android:layout_marginTop="49dp" />
 </RelativeLayout>
