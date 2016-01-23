@@ -7,13 +7,12 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".NameCharacter">
+    tools:context=".NamePlayers">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="name player 1"
-        android:id="@+id/textView2"
+        android:text="Input Name for Player"
         android:layout_above="@+id/inputName"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="29dp" />
@@ -22,11 +21,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="Name"
         android:ems="10"
         android:id="@+id/inputName"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:hint="Player Name" />
 
     <Button
         android:layout_width="wrap_content"

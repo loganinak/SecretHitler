@@ -31,7 +31,7 @@ public class Game extends AppCompatActivity {
             System.out.println("Party: " + p.playerData[1] + " Role: " + p.playerData[2]);
         }
 
-            Intent intent = new Intent(this, NameCharacter.class);
+            Intent intent = new Intent(this, NamePlayers.class);
             intent.putParcelableArrayListExtra("group", group);
             startActivityForResult(intent, setNamesCode);
     }
@@ -57,7 +57,7 @@ public class Game extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 group = data.getParcelableArrayListExtra("group");
                 if(group.get(0).getPlayerData()[0] == null){
-                    Intent intent = new Intent(this, NameCharacter.class);
+                    Intent intent = new Intent(this, NamePlayers.class);
                     intent.putParcelableArrayListExtra("group", group);
                     startActivityForResult(intent, setNamesCode);
                 }
