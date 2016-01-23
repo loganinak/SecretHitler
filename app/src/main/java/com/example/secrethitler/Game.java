@@ -13,6 +13,10 @@ public class Game extends AppCompatActivity {
     int president = 1;
     private Integer numPlayers;
     ArrayList<Player> group;
+    int currPresIndex = 0;
+    int currChanceIndex;
+    int prevPresIndex;
+    int prevChanceIndex;
 
 
     @Override
@@ -34,30 +38,30 @@ public class Game extends AppCompatActivity {
     }
 
     public void assignParty(int numPlayers){
-        int numFacists;
+        int numFascists;
         switch(numPlayers){
             case 5: case 6:
-                numFacists = 2;
+                numFascists = 2;
                 group.add(new Player("fascist", "Hitler"));
                 break;
             case 7: case 8:
-                numFacists = 3;
+                numFascists = 3;
                 group.add(new Player("fascist", "Hitler"));
                 break;
             case 9: case 10:
-                numFacists = 4;
+                numFascists = 4;
                 group.add(new Player("fascist", "Hitler"));
                 break;
             default:
-                numFacists = 20;
+                numFascists = 20;
                 break;
         }
 
-        for(int i = 1; i < numFacists; i++){
+        for(int i = 1; i < numFascists; i++){
             group.add(new Player("fascist", "not Hitler"));
         }
 
-        for(int i = 0; i < numPlayers - numFacists; i++){
+        for(int i = 0; i < numPlayers - numFascists; i++){
             group.add(new Player("liberal", "not Hitler"));
         }
 
