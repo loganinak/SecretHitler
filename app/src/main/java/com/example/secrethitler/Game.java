@@ -1,22 +1,17 @@
 package com.example.secrethitler;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 
 public class Game extends AppCompatActivity {
 
-    int chancellor = 0;
-    int president = 1;
     private Integer numPlayers;
+    int setNamesCode = 2;
     ArrayList<Player> group;
-    int currPresIndex = 0;
-    int currChanceIndex;
-    int prevPresIndex;
-    int prevChanceIndex;
 
 
     @Override
@@ -33,9 +28,43 @@ public class Game extends AppCompatActivity {
 
         System.out.println("Players: " + group.size());
         for(Player p : group){
-            System.out.println("Party: " + p.playerData[1] + " Role: "+ p.playerData[2]);
+            System.out.println("Party: " + p.playerData[1] + " Role: " + p.playerData[2]);
+        }
+
+            Intent intent = new Intent(this, NameCharacter.class);
+            intent.putParcelableArrayListExtra("group", group);
+            startActivityForResult(intent, setNamesCode);
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        System.out.println("pausing.....................................................");
+    }
+
+    public void onResume(){
+        super.onResume();
+        System.out.println("resuming.....................................................");
+        System.out.println("Players: " + group.size());
+        for(Player p : group){
+            System.out.println("Party: " + p.playerData[1] + " Role: " + p.playerData[2] + " name: " + p.playerData[0]);
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == setNamesCode) {
+            if (resultCode == Activity.RESULT_OK) {
+                group = data.getParcelableArrayListExtra("group");
+                if(group.get(0).getPlayerData()[0] == null){
+                    Intent intent = new Intent(this, NameCharacter.class);
+                    intent.putParcelableArrayListExtra("group", group);
+                    startActivityForResult(intent, setNamesCode);
+                }
+            }
+        }
+    }
+
 
     public void assignParty(int numPlayers){
         int numFascists;

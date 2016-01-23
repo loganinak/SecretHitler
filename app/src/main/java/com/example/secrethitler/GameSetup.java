@@ -30,5 +30,6 @@ public class GameSetup extends AppCompatActivity {
         Intent intent = new Intent(this, Game.class);
         intent.putExtra("Players", (Integer) playerCount.getSelectedItem());
         GameSetup.this.startActivity(intent);
+        finish();
     }
 }
