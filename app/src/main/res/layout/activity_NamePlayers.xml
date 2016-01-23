@@ -25,6 +25,7 @@
         android:id="@+id/inputName"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:text="zsfgasdf"
         android:hint="Player Name" />
 
     <Button
@@ -36,4 +37,13 @@
         android:layout_below="@+id/inputName"
         android:layout_centerHorizontal="true"
         android:onClick="endConfirm" />
+
+    <fragment
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:name="com.example.secrethitler.PlayerRole"
+        android:id="@+id/player_role"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        tools:layout="@layout/fragment_player_role" />
 </RelativeLayout>
