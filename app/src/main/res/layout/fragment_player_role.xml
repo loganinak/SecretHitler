@@ -16,7 +16,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=" Confrm Role"
+        android:text=" Confirm Role"
         android:id="@+id/confirmRole"
         android:onClick="confirmRole"
         android:layout_alignParentBottom="true"

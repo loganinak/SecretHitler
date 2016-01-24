@@ -31,7 +31,7 @@ public class PlayerRoleFragment extends Fragment {
         switch(role){
             case "Hitler":
                 roleImage.setImageResource(R.drawable.role_hitler);
-                break;
+            break;
             case "fascist":
                 roleImage.setImageResource(R.drawable.role_fascist);
                 break;
@@ -42,7 +42,6 @@ public class PlayerRoleFragment extends Fragment {
                 roleImage.setImageResource(R.drawable.policy_back);
                 break;
         }
-
 
         return view;
     }
