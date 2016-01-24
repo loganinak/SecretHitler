@@ -1,9 +1,16 @@
 package com.example.secrethitler;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 
@@ -31,41 +38,43 @@ public class Game extends AppCompatActivity {
             System.out.println("Party: " + p.playerData[1] + " Role: " + p.playerData[2]);
         }
 
-            Intent intent = new Intent(this, NamePlayers.class);
-            intent.putParcelableArrayListExtra("group", group);
-            startActivityForResult(intent, setNamesCode);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        InputNameFragment inputNameFragment = new InputNameFragment();
+        fragmentTransaction.add(R.id.fragment_container, inputNameFragment, "inputName_Fragment");
+        fragmentTransaction.commit();
     }
 
-    @Override
-    public void onPause(){
-        super.onPause();
-        System.out.println("pausing.....................................................");
+    public void confirmName(View view) {
+        System.out.println("---------------------------------------------------------------------");
+
+        EditText playerName = (EditText)findViewById(R.id.inputName_EditText);
+        Player temp = group.remove(0);
+        temp.setName(playerName.getText().toString());
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        PlayerRoleFragment playerRoleFragment = new PlayerRoleFragment();
+
+        Bundle role = new Bundle();
+        role.putString("role", temp.getPlayerData()[2]);
+        playerRoleFragment.setArguments(role);
+
+        fragmentTransaction.replace(R.id.fragment_container, playerRoleFragment, "playerRole_Fragment");
+        fragmentTransaction.commit();
+
+        group.add(temp);
     }
 
-    public void onResume(){
-        super.onResume();
-        System.out.println("resuming.....................................................");
-        System.out.println("Players: " + group.size());
-        for(Player p : group){
-            System.out.println("Party: " + p.playerData[1] + " Role: " + p.playerData[2] + " name: " + p.playerData[0]);
+    public void confirmRole(View view){
+        if(group.get(0).getPlayerData()[0] == null){
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            InputNameFragment inputNameFragment = new InputNameFragment();
+            fragmentTransaction.replace(R.id.fragment_container, inputNameFragment, "inputName_Fragment");
+            fragmentTransaction.commit();
         }
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == setNamesCode) {
-            if (resultCode == Activity.RESULT_OK) {
-                group = data.getParcelableArrayListExtra("group");
-                if(group.get(0).getPlayerData()[0] == null){
-                    Intent intent = new Intent(this, NamePlayers.class);
-                    intent.putParcelableArrayListExtra("group", group);
-                    startActivityForResult(intent, setNamesCode);
-                }
-            }
-        }
-    }
-
-
     public void assignParty(int numPlayers){
         int numFascists;
         switch(numPlayers){
@@ -87,11 +96,11 @@ public class Game extends AppCompatActivity {
         }
 
         for(int i = 1; i < numFascists; i++){
-            group.add(new Player("fascist", "not Hitler"));
+            group.add(new Player("fascist", "fascist"));
         }
 
         for(int i = 0; i < numPlayers - numFascists; i++){
-            group.add(new Player("liberal", "not Hitler"));
+            group.add(new Player("liberal", "liberal"));
         }
 
         group = shuffle(group);

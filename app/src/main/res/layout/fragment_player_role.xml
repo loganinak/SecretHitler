@@ -1,16 +1,25 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.secrethitler.PlayerRole">
+    tools:context="com.example.secrethitler.PlayerRoleFragment">
 
     <!-- TODO: Update blank fragment layout -->
+
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:id="@+id/image_role"
+        android:layout_above="@+id/confirmRole"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Confirm"
-        android:id="@+id/Confirm"
-        android:layout_gravity="center_horizontal|top"
-        android:onClick="confirm" />
-</FrameLayout>
+        android:text=" Confrm Role"
+        android:id="@+id/confirmRole"
+        android:onClick="confirmRole"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="49dp" />
+</RelativeLayout>
