@@ -131,19 +131,26 @@ public class Game extends AppCompatActivity {
     public void playerTurn(View view) {
         //player elects chancellor
 
-        //all players vote for govenment
+        //all players vote for government
+        if(getVotes()) {
 
-        //president draws 3 policies, discards 1
+            //president draws 3 policies, discards 1
 
-        //chancellor discards 1 policy, plays the other
+            //chancellor discards 1 policy, plays the other
 
-
-        endPlayerTurn();
+        }else {
+            endPlayerTurn();
+        }
     }
 
     public void endPlayerTurn() {
         group.add(group.remove(0));
         startNextPlayerTurn();
+    }
+
+    public boolean getVotes(){
+
+        return false;
     }
 
 }

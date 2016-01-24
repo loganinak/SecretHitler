@@ -9,7 +9,7 @@ package com.example.secrethitler;
  * Created by Logan on 1/22/2016.
  */
 public class Player implements Parcelable {
-    String[] playerData = new String[4];
+    String[] playerData = new String[5];
 
     public Player(String party, String role){
         playerData[1] = party;
@@ -23,6 +23,14 @@ public class Player implements Parcelable {
 
     public String[] getPlayerData(){
         return playerData;
+    }
+
+    public void setVote(boolean voteYes){
+        if(voteYes){
+            playerData[4] = "ja";
+        }else{
+            playerData[4] = "nein";
+        }
     }
 
     @Override
