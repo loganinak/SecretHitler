@@ -12,10 +12,10 @@ import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VoteFragment extends Fragment {
+public class VoteResultsFragment extends Fragment {
 
 
-    public VoteFragment() {
+    public VoteResultsFragment() {
         // Required empty public constructor
     }
 
@@ -23,11 +23,10 @@ public class VoteFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_vote, container, false);
-        TextView text = (TextView)view.findViewById(R.id.votingInfo_TextView);
-        Player president = getArguments().getParcelable("president");
-        Player chancellor = getArguments().getParcelable("chancellor");
-        text.append(president.getPlayerData()[0] + " as President with " + "placeholder" + " as Chancellor");
+        View view = inflater.inflate(R.layout.fragment_vote_results, container, false);
+        TextView wonText = (TextView)view.findViewById(R.id.passtoPresident_TextView);
+        Player player = getArguments().getParcelable("player");
+        wonText.append(player.getPlayerData()[0]);
         return view;
     }
 

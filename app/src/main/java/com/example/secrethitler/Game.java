@@ -14,15 +14,22 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Game extends AppCompatActivity {
 
     private Integer numPlayers;
     int setNamesCode = 2;
+    //0 = name, 1 = party, 2 = role, 3 = dead/alive, 4 = vote
     ArrayList<Player> group;
     int[] gameData = new int[]{0, 0, 0};
-    int chancellorIndex;
+    Player chancellor;
+    Player president;
     Player previousChancellor;
+    //0 = fascist, 1 = liberal
+    ArrayList<Integer> cards;
 
 
     @Override
@@ -43,6 +50,8 @@ public class Game extends AppCompatActivity {
         }
 
         //create policy deck
+        cards = new ArrayList<Integer>();
+        resetCards();
 
         replaceCurrentFragment(new InputNameFragment(), "fragment_container");
     }
@@ -78,15 +87,7 @@ public class Game extends AppCompatActivity {
             group.add(new Player("liberal", "liberal"));
         }
 
-        group = shuffle(group);
-    }
-
-    private ArrayList shuffle(ArrayList list) {
-        ArrayList temp = new ArrayList();
-        while (!list.isEmpty()) {
-            temp.add(list.remove((int) (Math.random() * list.size())));
-        }
-        return temp;
+        Collections.shuffle(group);
     }
 
     public void confirmName(View view) {
@@ -120,6 +121,7 @@ public class Game extends AppCompatActivity {
     }
 
     public void startNextPlayerTurn() {
+        president = group.get(0);
         Fragment confirmPlayerFragment = new ConfirmPlayerFragment();
         Bundle playerData = new Bundle();
         playerData.putParcelable("playerData", group.get(0));
@@ -138,7 +140,12 @@ public class Game extends AppCompatActivity {
     }
 
     public void getVotes(View view) {
-        replaceCurrentFragment(new VoteFragment(), "fragment_container");
+        Bundle candidates = new Bundle();
+        candidates.putParcelable("president", president);
+        candidates.putParcelable("chancellor", chancellor);
+        Fragment voteFragment = new VoteFragment();
+        voteFragment.setArguments(candidates);
+        replaceCurrentFragment(voteFragment, "fragment_container");
     }
 
     public void vote(View view) {
@@ -152,26 +159,32 @@ public class Game extends AppCompatActivity {
                     break;
             }
             group.add(group.remove(0));
-            if (group.get(0).getPlayerData()[4] == null) {
-                replaceCurrentFragment(new VoteFragment(), "fragment_container");
-            } else {
-
-            }
         }
         if (group.get(0).getPlayerData()[4] == null) {
-            replaceCurrentFragment(new VoteFragment(), "fragment_container");
+            Bundle candidates = new Bundle();
+            candidates.putParcelable("president", president);
+            candidates.putParcelable("chancellor", chancellor);
+            Fragment voteFragment = new VoteFragment();
+            voteFragment.setArguments(candidates);
+            replaceCurrentFragment(voteFragment, "fragment_container");
         } else {
             int numJa = 0;
             int numNein = 0;
             for (Player p : group) {
-                if (group.get(0).getPlayerData()[4].compareTo("ja") == 0) {
+                if (p.getPlayerData()[4].compareTo("ja") == 0) {
                     numJa++;
                 } else {
                     numNein++;
                 }
             }
+            System.out.println(numJa);
+            System.out.println(numNein);
             if (numJa > numNein) {
-                replaceCurrentFragment(new PresidentPolicyFragment(), "fragment_container");
+                Bundle player = new Bundle();
+                player.putParcelable("player", group.get(0));
+                Fragment voteResultFragment = new VoteResultsFragment();
+                voteResultFragment.setArguments(player);
+                replaceCurrentFragment(voteResultFragment, "fragment_container");
             } else {
                 endPlayerTurn();
             }
@@ -182,5 +195,30 @@ public class Game extends AppCompatActivity {
         for (Player p : group) {
             p.setVote(3);
         }
+    }
+
+    public void presidentPolicies(View view){
+        if(cards.size() < 3){
+            resetCards();
+        }
+        Bundle drawnPolicy = new Bundle();
+        ArrayList<Integer> drawn = new ArrayList<Integer>();
+        drawn.add(cards.remove(0));
+        drawn.add(cards.remove(0));
+        drawn.add(cards.remove(0));
+        drawnPolicy.putIntegerArrayList("cards", drawn);
+        Fragment presidentPolicyFragment = new PresidentPolicyFragment();
+        presidentPolicyFragment.setArguments(drawnPolicy);
+        replaceCurrentFragment(presidentPolicyFragment, "fragmentContainer");
+    }
+    public void resetCards(){
+        cards.clear();
+        for(int i  = 0; i < 11; i++){
+            cards.add(0);
+        }
+        for(int i = 0; i < 6; i++){
+            cards.add(1);
+        }
+        Collections.shuffle(cards);
     }
 }
