@@ -44,10 +44,10 @@ public class Game extends AppCompatActivity {
 
         //create policy deck
 
-        replaceCurrentFragment(new InputNameFragment(), "inputName_Fragment");
+        replaceCurrentFragment(new InputNameFragment(), "fragment_container");
     }
 
-    public void assignParty(int numPlayers) {
+    private void assignParty(int numPlayers) {
         int numFascists;
         switch (numPlayers) {
             case 5:
@@ -81,7 +81,7 @@ public class Game extends AppCompatActivity {
         group = shuffle(group);
     }
 
-    public ArrayList shuffle(ArrayList list) {
+    private ArrayList shuffle(ArrayList list) {
         ArrayList temp = new ArrayList();
         while (!list.isEmpty()) {
             temp.add(list.remove((int) (Math.random() * list.size())));
@@ -100,22 +100,21 @@ public class Game extends AppCompatActivity {
         role.putString("role", temp.getPlayerData()[2]);
         playerRoleFragment.setArguments(role);
 
-        replaceCurrentFragment(playerRoleFragment, "playerRole_Fragment");
+        replaceCurrentFragment(playerRoleFragment, "fragment_container");
 
         group.add(temp);
     }
 
     public void confirmRole(View view) {
         if (group.get(0).getPlayerData()[0] == null) {
-            replaceCurrentFragment(new InputNameFragment(), "inputName_Fragment");
+            replaceCurrentFragment(new InputNameFragment(), "fragment_container");
         } else {
             startNextPlayerTurn();
         }
     }
 
     public void replaceCurrentFragment(Fragment fragment, String name) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment, name);
         fragmentTransaction.commit();
     }
@@ -125,32 +124,63 @@ public class Game extends AppCompatActivity {
         Bundle playerData = new Bundle();
         playerData.putParcelable("playerData", group.get(0));
         confirmPlayerFragment.setArguments(playerData);
-        replaceCurrentFragment(confirmPlayerFragment, "confirmPlayer_Fragment");
+        replaceCurrentFragment(confirmPlayerFragment, "fragment_container");
     }
 
     public void playerTurn(View view) {
-        //player elects chancellor
-
-        //all players vote for government
-        if(getVotes()) {
-
-            //president draws 3 policies, discards 1
-
-            //chancellor discards 1 policy, plays the other
-
-        }else {
-            endPlayerTurn();
-        }
+        replaceCurrentFragment(new ChooseChancellorFragment(), "fragment_container");
     }
 
     public void endPlayerTurn() {
         group.add(group.remove(0));
+        resetVotes();
         startNextPlayerTurn();
     }
 
-    public boolean getVotes(){
-
-        return false;
+    public void getVotes(View view) {
+        replaceCurrentFragment(new VoteFragment(), "fragment_container");
     }
 
+    public void vote(View view) {
+        if (group.get(0).getPlayerData()[4] == null) {
+            switch (view.getId()) {
+                case R.id.nein_Button:
+                    group.get(0).setVote(0);
+                    break;
+                default:
+                    group.get(0).setVote(1);
+                    break;
+            }
+            group.add(group.remove(0));
+            if (group.get(0).getPlayerData()[4] == null) {
+                replaceCurrentFragment(new VoteFragment(), "fragment_container");
+            } else {
+
+            }
+        }
+        if (group.get(0).getPlayerData()[4] == null) {
+            replaceCurrentFragment(new VoteFragment(), "fragment_container");
+        } else {
+            int numJa = 0;
+            int numNein = 0;
+            for (Player p : group) {
+                if (group.get(0).getPlayerData()[4].compareTo("ja") == 0) {
+                    numJa++;
+                } else {
+                    numNein++;
+                }
+            }
+            if (numJa > numNein) {
+                replaceCurrentFragment(new PresidentPolicyFragment(), "fragment_container");
+            } else {
+                endPlayerTurn();
+            }
+        }
+    }
+
+    private void resetVotes() {
+        for (Player p : group) {
+            p.setVote(3);
+        }
+    }
 }

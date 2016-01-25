@@ -25,11 +25,13 @@ public class Player implements Parcelable {
         return playerData;
     }
 
-    public void setVote(boolean voteYes){
-        if(voteYes){
+    public void setVote(int voteYes){
+        if(voteYes == 1){
             playerData[4] = "ja";
-        }else{
+        }else if(voteYes == 0){
             playerData[4] = "nein";
+        }else{
+            playerData[4] = null;
         }
     }
 

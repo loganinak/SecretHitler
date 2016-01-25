@@ -1,0 +1,38 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.secrethitler.VoteFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:text="Voting for"
+        android:id="@+id/votingInfo_TextView"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="90"
+        android:layout_margin="5dp" />
+
+    <ImageButton
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/ja_Button"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="50"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ballot_ja"
+        android:onClick="vote" />
+
+    <ImageButton
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/nein_Button"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="50"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ballot_nein"
+        android:onClick="vote" />
+</LinearLayout>
