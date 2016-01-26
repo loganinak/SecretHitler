@@ -27,7 +27,7 @@ public class VoteFragment extends Fragment {
         TextView text = (TextView)view.findViewById(R.id.votingInfo_TextView);
         Player president = getArguments().getParcelable("president");
         Player chancellor = getArguments().getParcelable("chancellor");
-        text.append(president.getPlayerData()[0] + " as President with " + "placeholder" + " as Chancellor");
+        text.append(president.getPlayerData()[0] + " as President with " + chancellor.getPlayerData()[0] + " as Chancellor");
         return view;
     }
 

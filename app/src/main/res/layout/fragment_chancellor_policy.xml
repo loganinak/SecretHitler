@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.secrethitler.ChancellorPolicyFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="33"
+        android:id="@+id/chancellor_policy1"
+        android:onClick="discardPolicy"
+        android:cropToPadding="false"
+        android:scaleType="fitCenter" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="33"
+        android:id="@+id/chancellor_policy2"
+        android:onClick="discardPolicy"
+        android:cropToPadding="false"
+        android:scaleType="fitCenter" />
+</LinearLayout>

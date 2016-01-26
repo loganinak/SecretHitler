@@ -26,17 +26,18 @@ public class PresidentPolicyFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_president_policy, container, false);
+
         ArrayList<Integer> cards = getArguments().getIntegerArrayList("cards");
-        for(int i = 0; i < 3; i++){
-            if(cards.get(i) == 1){
-                cards.set(i, R.drawable.policy_liberal);
-            } else{
-                cards.set(i, R.drawable.policy_fascist);
-            }
-        }
-        ((ImageButton)view.findViewById(R.id.president_policy1)).setImageResource(cards.remove(0));
-        ((ImageButton)view.findViewById(R.id.president_policy2)).setImageResource(cards.remove(0));
-        ((ImageButton)view.findViewById(R.id.president_policy3)).setImageResource(cards.remove(0));
+
+        ((ImageButton)view.findViewById(R.id.president_policy1)).setImageResource(cards.get(0));
+        (view.findViewById(R.id.president_policy1)).setTag(cards.get(0));
+
+        ((ImageButton)view.findViewById(R.id.president_policy2)).setImageResource(cards.get(1));
+        (view.findViewById(R.id.president_policy2)).setTag(cards.get(1));
+
+        ((ImageButton)view.findViewById(R.id.president_policy3)).setImageResource(cards.get(2));
+        (view.findViewById(R.id.president_policy3)).setTag(cards.get(2));
+
 
         return view;
     }

@@ -11,10 +11,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -24,12 +26,15 @@ public class Game extends AppCompatActivity {
     int setNamesCode = 2;
     //0 = name, 1 = party, 2 = role, 3 = dead/alive, 4 = vote
     ArrayList<Player> group;
+    //index 0 = fascistPoliciesPassed 1 = liberalPoliciesPassed
     int[] gameData = new int[]{0, 0, 0};
     Player chancellor;
     Player president;
     Player previousChancellor;
-    //0 = fascist, 1 = liberal
-    ArrayList<Integer> cards;
+    //use R.drawable.PNGNAME to get id of fascist and liberal
+    ArrayList<Integer> cards = new ArrayList<Integer>();
+    ArrayList<Integer> drawn = new ArrayList<Integer>();
+    boolean chancellorTurn = false;
 
 
     @Override
@@ -50,7 +55,6 @@ public class Game extends AppCompatActivity {
         }
 
         //create policy deck
-        cards = new ArrayList<Integer>();
         resetCards();
 
         replaceCurrentFragment(new InputNameFragment(), "fragment_container");
@@ -116,30 +120,48 @@ public class Game extends AppCompatActivity {
 
     public void replaceCurrentFragment(Fragment fragment, String name) {
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment, name);
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
     }
 
     public void startNextPlayerTurn() {
+        chancellorTurn = false;
         president = group.get(0);
         Fragment confirmPlayerFragment = new ConfirmPlayerFragment();
         Bundle playerData = new Bundle();
-        playerData.putParcelable("playerData", group.get(0));
+        playerData.putParcelable("playerData", president);
         confirmPlayerFragment.setArguments(playerData);
         replaceCurrentFragment(confirmPlayerFragment, "fragment_container");
     }
 
     public void playerTurn(View view) {
-        replaceCurrentFragment(new ChooseChancellorFragment(), "fragment_container");
+        if(!chancellorTurn) {
+            replaceCurrentFragment(new ChooseChancellorFragment(), "fragment_container");
+        } else{
+            Bundle chancellorCards = new Bundle();
+            chancellorCards.putIntegerArrayList("cards", drawn);
+            Fragment chancellorPolicyFragment = new ChancellorPolicyFragment();
+            chancellorPolicyFragment.setArguments(chancellorCards);
+            replaceCurrentFragment(chancellorPolicyFragment, "fragment_container");
+        }
     }
 
     public void endPlayerTurn() {
         group.add(group.remove(0));
+        drawn.clear();
         resetVotes();
         startNextPlayerTurn();
     }
 
+    public void nextPlayerTurn(View view){
+        endPlayerTurn();
+    }
+
     public void getVotes(View view) {
+        //set the chancellor here based on click from fragment_choose_chancellor.xml
+        //for now though
+        chancellor = group.get(3);
+
         Bundle candidates = new Bundle();
         candidates.putParcelable("president", president);
         candidates.putParcelable("chancellor", chancellor);
@@ -180,6 +202,7 @@ public class Game extends AppCompatActivity {
             System.out.println(numJa);
             System.out.println(numNein);
             if (numJa > numNein) {
+                chancellorTurn = true;
                 Bundle player = new Bundle();
                 player.putParcelable("player", group.get(0));
                 Fragment voteResultFragment = new VoteResultsFragment();
@@ -202,7 +225,6 @@ public class Game extends AppCompatActivity {
             resetCards();
         }
         Bundle drawnPolicy = new Bundle();
-        ArrayList<Integer> drawn = new ArrayList<Integer>();
         drawn.add(cards.remove(0));
         drawn.add(cards.remove(0));
         drawn.add(cards.remove(0));
@@ -211,14 +233,51 @@ public class Game extends AppCompatActivity {
         presidentPolicyFragment.setArguments(drawnPolicy);
         replaceCurrentFragment(presidentPolicyFragment, "fragmentContainer");
     }
+
     public void resetCards(){
         cards.clear();
         for(int i  = 0; i < 11; i++){
-            cards.add(0);
+            cards.add(R.drawable.policy_fascist);
         }
         for(int i = 0; i < 6; i++){
-            cards.add(1);
+            cards.add(R.drawable.policy_liberal);
         }
         Collections.shuffle(cards);
+    }
+
+    public void discardPolicy(View view){
+        int idClicked;
+        ImageButton button = (ImageButton)view.findViewById(view.getId());
+        if(button.getTag().equals(R.drawable.policy_fascist)){
+            idClicked = R.drawable.policy_fascist;
+        } else{
+            idClicked = R.drawable.policy_liberal;
+        }
+        for(int i = 0; i < 3; i++){
+            if(drawn.get(i) == idClicked){
+                drawn.remove(i);
+                i = 4;
+            }
+        }
+        if(drawn.size() == 2) {
+            Fragment confirmPlayerFragment = new ConfirmPlayerFragment();
+            Bundle playerData = new Bundle();
+            playerData.putParcelable("playerData", chancellor);
+            confirmPlayerFragment.setArguments(playerData);
+            replaceCurrentFragment(confirmPlayerFragment, "fragment_container");
+        } else{
+            if(drawn.get(0) == R.drawable.policy_fascist){
+                gameData[0]++;
+            }else{
+                gameData[1]++;
+            }
+            System.out.println("Fascist policies passed: " + gameData[0]);
+            System.out.println("liberal policies passed: " + gameData[1]);
+            Bundle idPassed = new Bundle();
+            idPassed.putInt("card", drawn.get(0));
+            Fragment passedPolicyFragment = new PassedPolicyFragment();
+            passedPolicyFragment.setArguments(idPassed);
+            replaceCurrentFragment(passedPolicyFragment, "fragment_container");
+        }
     }
 }
