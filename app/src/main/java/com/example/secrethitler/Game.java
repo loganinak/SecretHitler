@@ -1,25 +1,14 @@
 package com.example.secrethitler;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Objects;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Game extends AppCompatActivity {
 
@@ -141,7 +130,7 @@ public class Game extends AppCompatActivity {
             Bundle players = new Bundle();
             ArrayList eligiblePlayers = new ArrayList();
             for (Player p : group) {
-                if (p != previousChancellor && p != previousPresident && p != president && p.getPlayerData()[3] == "alive") {
+                if (p != previousChancellor && p != previousPresident && p != president) {
                     eligiblePlayers.add(p);
                 }
             }
@@ -299,16 +288,106 @@ public class Game extends AppCompatActivity {
     }
 
     public void setChoice(View view) {
-        TextView text = (TextView) view.findViewById(R.id.playerText_TextView);
         for (Player p : group) {
-            if (p.getPlayerData()[0].compareTo((String) view.getTag()) == 0) {
+            if (p.getPlayerData()[0].equals(view.getTag())) {
                 choice = p;
             }
         }
     }
-    
-    public void presPowers(View view) {
 
+    public void presPowers(View view) {
+        if(view.getTag().equals(R.drawable.policy_fascist)) {
+            switch (numPlayers) {
+                case 5:
+                case 6:
+                    switch (gameData[0]){
+                        case 3:
+                            power_topThree();
+                            break;
+                        case 4:
+                        case 5:
+                            power_kill();
+                            break;
+                        default:
+                            endPlayerTurn();
+                            break;
+                }
+                    break;
+                case 7:
+                case 8:
+                    switch (gameData[0]){
+                        case 2:
+                            power_investigate();
+                            break;
+                        case 3:
+                            power_nextPres();
+                            break;
+                        case 4:
+                        case 5:
+                            power_kill();
+                            break;
+                        default:
+                            endPlayerTurn();
+                            break;
+                    }
+                    break;
+                case 9:
+                case 10:
+                    switch (gameData[0]){
+                        case 1:
+                        case 2:
+                            power_investigate();
+                            break;
+                        case 3:
+                            power_nextPres();
+                            break;
+                        case 4:
+                        case 5:
+                            power_kill();
+                            break;
+                        default:
+                            endPlayerTurn();
+                            break;
+                    }
+                    break;
+            }
+        } else{
+            endPlayerTurn();
+        }
+    }
+
+    private void power_investigate() {
+    }
+
+    private void power_nextPres() {
+    }
+
+    private void power_kill() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("players", group);
+        Fragment fragment = new Power_KillPlayerFragment();
+        fragment.setArguments(bundle);
+        replaceCurrentFragment(fragment, "fragmentContainer");
+    }
+
+    private void power_topThree() {
+        if (cards.size() < 3) {
+            resetCards();
+        }
+        Bundle topCards = new Bundle();
+        topCards.putIntegerArrayList("cards", cards);
+        Fragment fragment = new Power_TopThreeFragment();
+        fragment.setArguments(topCards);
+        replaceCurrentFragment(fragment, "fragmentContainer");
+    }
+
+    public void removePlayer(View view){
+        group.remove(choice);
+        Bundle player = new Bundle();
+        player.putParcelable("player", choice);
+        Fragment fragment = new KilledPlayerFragment();
+        fragment.setArguments(player);
+        replaceCurrentFragment(fragment, "fragmentContainer");
     }
 
 }

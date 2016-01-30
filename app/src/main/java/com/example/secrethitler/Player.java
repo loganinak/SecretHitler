@@ -14,7 +14,6 @@ public class Player implements Parcelable {
     public Player(String party, String role){
         playerData[1] = party;
         playerData[2] = role;
-        playerData[3] = "alive";
     }
 
     public void setName(String name){

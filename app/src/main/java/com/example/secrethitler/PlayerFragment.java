@@ -26,7 +26,7 @@ public class PlayerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_player, container, false);
         Player player = getArguments().getParcelable("player");
         ((TextView)view.findViewById(R.id.playerText_TextView)).append(player.getPlayerData()[0]);
-        view.findViewById(R.id.button2).setTag(player.getPlayerData()[0]);
+        view.findViewById(R.id.playerFragemt_Button).setTag(player.getPlayerData()[0]);
         return view;
     }
 

@@ -1,0 +1,45 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.secrethitler.Power_TopThreeFragment"
+    android:orientation="vertical">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="33"
+        android:id="@+id/topThree_policy1"
+        android:cropToPadding="false"
+        android:scaleType="fitCenter" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="33"
+        android:id="@+id/topThree_policy2"
+        android:cropToPadding="false"
+        android:scaleType="fitCenter" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="33"
+        android:id="@+id/topThree_policy3"
+        android:cropToPadding="false"
+        android:scaleType="fitCenter"
+        android:onClick="startNextPlayerTurn" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:text="Continue"
+        android:id="@+id/button4"
+        android:layout_gravity="center_horizontal"
+        android:onClick="nextPlayerTurn" />
+</LinearLayout>
