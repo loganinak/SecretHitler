@@ -25,7 +25,7 @@ public class Game extends AppCompatActivity {
     //use R.drawable.PNGNAME to get id of fascist and liberal
     ArrayList<Integer> cards = new ArrayList<Integer>();
     ArrayList<Integer> drawn = new ArrayList<Integer>();
-    boolean chancellorTurn = false;
+    int turnID = 0;
     Player choice;
 
 
@@ -126,7 +126,8 @@ public class Game extends AppCompatActivity {
     }
 
     public void playerTurn(View view) {
-        if (!chancellorTurn) {
+        if (turnID == 0) {
+            System.out.println("TurnID: " + turnID);
             Bundle players = new Bundle();
             ArrayList eligiblePlayers = new ArrayList();
             for (Player p : group) {
@@ -138,18 +139,27 @@ public class Game extends AppCompatActivity {
             Fragment fragment = new ChooseChancellorFragment();
             fragment.setArguments(players);
             replaceCurrentFragment(fragment, "fragment_container");
-        } else {
+        } else if(turnID == 1){
             Bundle chancellorCards = new Bundle();
             chancellorCards.putIntegerArrayList("cards", drawn);
             Fragment chancellorPolicyFragment = new ChancellorPolicyFragment();
             chancellorPolicyFragment.setArguments(chancellorCards);
             replaceCurrentFragment(chancellorPolicyFragment, "fragment_container");
+        } else if(turnID == 2){
+            if (cards.size() < 3) {
+                resetCards();
+            }
+            Bundle topCards = new Bundle();
+            topCards.putIntegerArrayList("cards", cards);
+            Fragment fragment = new Power_TopThreeFragment();
+            fragment.setArguments(topCards);
+            replaceCurrentFragment(fragment, "fragmentContainer");
         }
     }
 
     public void endPlayerTurn() {
         group.add(group.remove(0));
-        chancellorTurn = false;
+        turnID = 0;
         drawn.clear();
         president = null;
         chancellor = null;
@@ -208,7 +218,7 @@ public class Game extends AppCompatActivity {
             if (numJa > numNein) {
                 previousChancellor = chancellor;
                 previousPresident = president;
-                chancellorTurn = true;
+                turnID = 1;
                 Bundle player = new Bundle();
                 player.putParcelable("player", group.get(0));
                 Fragment voteResultFragment = new VoteResultsFragment();
@@ -371,14 +381,12 @@ public class Game extends AppCompatActivity {
     }
 
     private void power_topThree() {
-        if (cards.size() < 3) {
-            resetCards();
-        }
-        Bundle topCards = new Bundle();
-        topCards.putIntegerArrayList("cards", cards);
-        Fragment fragment = new Power_TopThreeFragment();
-        fragment.setArguments(topCards);
-        replaceCurrentFragment(fragment, "fragmentContainer");
+        turnID = 2;
+        Fragment confirmPlayerFragment = new ConfirmPlayerFragment();
+        Bundle playerData = new Bundle();
+        playerData.putParcelable("playerData", president);
+        confirmPlayerFragment.setArguments(playerData);
+        replaceCurrentFragment(confirmPlayerFragment, "fragment_container");
     }
 
     public void removePlayer(View view){
