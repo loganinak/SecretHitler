@@ -18,8 +18,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:text="Next Turn"
+        android:text="Continue"
         android:id="@+id/button"
         android:layout_gravity="center_horizontal"
-        android:onClick="nextPlayerTurn" />
+        android:onClick="presPowers" />
 </LinearLayout>

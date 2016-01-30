@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,10 +32,12 @@ public class Game extends AppCompatActivity {
     Player chancellor;
     Player president;
     Player previousChancellor;
+    Player previousPresident;
     //use R.drawable.PNGNAME to get id of fascist and liberal
     ArrayList<Integer> cards = new ArrayList<Integer>();
     ArrayList<Integer> drawn = new ArrayList<Integer>();
     boolean chancellorTurn = false;
+    Player choice;
 
 
     @Override
@@ -125,7 +128,6 @@ public class Game extends AppCompatActivity {
     }
 
     public void startNextPlayerTurn() {
-        chancellorTurn = false;
         president = group.get(0);
         Fragment confirmPlayerFragment = new ConfirmPlayerFragment();
         Bundle playerData = new Bundle();
@@ -135,9 +137,19 @@ public class Game extends AppCompatActivity {
     }
 
     public void playerTurn(View view) {
-        if(!chancellorTurn) {
-            replaceCurrentFragment(new ChooseChancellorFragment(), "fragment_container");
-        } else{
+        if (!chancellorTurn) {
+            Bundle players = new Bundle();
+            ArrayList eligiblePlayers = new ArrayList();
+            for (Player p : group) {
+                if (p != previousChancellor && p != previousPresident && p != president && p.getPlayerData()[3] == "alive") {
+                    eligiblePlayers.add(p);
+                }
+            }
+            players.putParcelableArrayList("Players", eligiblePlayers);
+            Fragment fragment = new ChooseChancellorFragment();
+            fragment.setArguments(players);
+            replaceCurrentFragment(fragment, "fragment_container");
+        } else {
             Bundle chancellorCards = new Bundle();
             chancellorCards.putIntegerArrayList("cards", drawn);
             Fragment chancellorPolicyFragment = new ChancellorPolicyFragment();
@@ -148,20 +160,23 @@ public class Game extends AppCompatActivity {
 
     public void endPlayerTurn() {
         group.add(group.remove(0));
+        chancellorTurn = false;
         drawn.clear();
+        president = null;
+        chancellor = null;
+        choice = null;
         resetVotes();
         startNextPlayerTurn();
     }
 
-    public void nextPlayerTurn(View view){
+    public void nextPlayerTurn(View view) {
         endPlayerTurn();
     }
 
     public void getVotes(View view) {
         //set the chancellor here based on click from fragment_choose_chancellor.xml
         //for now though
-        chancellor = group.get(3);
-
+        chancellor = choice;
         Bundle candidates = new Bundle();
         candidates.putParcelable("president", president);
         candidates.putParcelable("chancellor", chancellor);
@@ -202,6 +217,8 @@ public class Game extends AppCompatActivity {
             System.out.println(numJa);
             System.out.println(numNein);
             if (numJa > numNein) {
+                Player previousChancellor = chancellor;
+                Player previousPresident = president;
                 chancellorTurn = true;
                 Bundle player = new Bundle();
                 player.putParcelable("player", group.get(0));
@@ -220,8 +237,8 @@ public class Game extends AppCompatActivity {
         }
     }
 
-    public void presidentPolicies(View view){
-        if(cards.size() < 3){
+    public void presidentPolicies(View view) {
+        if (cards.size() < 3) {
             resetCards();
         }
         Bundle drawnPolicy = new Bundle();
@@ -234,41 +251,41 @@ public class Game extends AppCompatActivity {
         replaceCurrentFragment(presidentPolicyFragment, "fragmentContainer");
     }
 
-    public void resetCards(){
+    public void resetCards() {
         cards.clear();
-        for(int i  = 0; i < 11; i++){
+        for (int i = 0; i < 11; i++) {
             cards.add(R.drawable.policy_fascist);
         }
-        for(int i = 0; i < 6; i++){
+        for (int i = 0; i < 6; i++) {
             cards.add(R.drawable.policy_liberal);
         }
         Collections.shuffle(cards);
     }
 
-    public void discardPolicy(View view){
+    public void discardPolicy(View view) {
         int idClicked;
-        ImageButton button = (ImageButton)view.findViewById(view.getId());
-        if(button.getTag().equals(R.drawable.policy_fascist)){
+        ImageButton button = (ImageButton) view.findViewById(view.getId());
+        if (button.getTag().equals(R.drawable.policy_fascist)) {
             idClicked = R.drawable.policy_fascist;
-        } else{
+        } else {
             idClicked = R.drawable.policy_liberal;
         }
-        for(int i = 0; i < 3; i++){
-            if(drawn.get(i) == idClicked){
+        for (int i = 0; i < 3; i++) {
+            if (drawn.get(i) == idClicked) {
                 drawn.remove(i);
                 i = 4;
             }
         }
-        if(drawn.size() == 2) {
+        if (drawn.size() == 2) {
             Fragment confirmPlayerFragment = new ConfirmPlayerFragment();
             Bundle playerData = new Bundle();
             playerData.putParcelable("playerData", chancellor);
             confirmPlayerFragment.setArguments(playerData);
             replaceCurrentFragment(confirmPlayerFragment, "fragment_container");
-        } else{
-            if(drawn.get(0) == R.drawable.policy_fascist){
+        } else {
+            if (drawn.get(0) == R.drawable.policy_fascist) {
                 gameData[0]++;
-            }else{
+            } else {
                 gameData[1]++;
             }
             System.out.println("Fascist policies passed: " + gameData[0]);
@@ -280,4 +297,18 @@ public class Game extends AppCompatActivity {
             replaceCurrentFragment(passedPolicyFragment, "fragment_container");
         }
     }
+
+    public void setChoice(View view) {
+        TextView text = (TextView) view.findViewById(R.id.playerText_TextView);
+        for (Player p : group) {
+            if (p.getPlayerData()[0].compareTo((String) view.getTag()) == 0) {
+                choice = p;
+            }
+        }
+    }
+    
+    public void presPowers(View view) {
+
+    }
+
 }
