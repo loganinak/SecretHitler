@@ -130,7 +130,7 @@ public class Game extends AppCompatActivity {
             Bundle players = new Bundle();
             ArrayList eligiblePlayers = new ArrayList();
             for (Player p : group) {
-                if (p != previousChancellor && p != previousPresident && p != president) {
+                if (!p.equals(previousChancellor) && !p.equals(previousPresident) && p != president) {
                     eligiblePlayers.add(p);
                 }
             }
@@ -206,8 +206,8 @@ public class Game extends AppCompatActivity {
             System.out.println(numJa);
             System.out.println(numNein);
             if (numJa > numNein) {
-                Player previousChancellor = chancellor;
-                Player previousPresident = president;
+                previousChancellor = chancellor;
+                previousPresident = president;
                 chancellorTurn = true;
                 Bundle player = new Bundle();
                 player.putParcelable("player", group.get(0));
