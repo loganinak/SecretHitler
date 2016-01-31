@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import java.nio.BufferUnderflowException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -127,7 +129,6 @@ public class Game extends AppCompatActivity {
 
     public void playerTurn(View view) {
         if (turnID == 0) {
-            System.out.println("TurnID: " + turnID);
             Bundle players = new Bundle();
             ArrayList eligiblePlayers = new ArrayList();
             for (Player p : group) {
@@ -216,14 +217,18 @@ public class Game extends AppCompatActivity {
             System.out.println(numJa);
             System.out.println(numNein);
             if (numJa > numNein) {
-                previousChancellor = chancellor;
-                previousPresident = president;
-                turnID = 1;
-                Bundle player = new Bundle();
-                player.putParcelable("player", group.get(0));
-                Fragment voteResultFragment = new VoteResultsFragment();
-                voteResultFragment.setArguments(player);
-                replaceCurrentFragment(voteResultFragment, "fragment_container");
+                if(gameData[0] >=3 && chancellor.getPlayerData()[2].compareTo("Hitler") == 0){
+                    gameOver("fascists");
+                } else {
+                    previousChancellor = chancellor;
+                    previousPresident = president;
+                    turnID = 1;
+                    Bundle player = new Bundle();
+                    player.putParcelable("player", group.get(0));
+                    Fragment voteResultFragment = new VoteResultsFragment();
+                    voteResultFragment.setArguments(player);
+                    replaceCurrentFragment(voteResultFragment, "fragment_container");
+                }
             } else {
                 endPlayerTurn();
             }
@@ -252,10 +257,10 @@ public class Game extends AppCompatActivity {
 
     public void resetCards() {
         cards.clear();
-        for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < 11 - gameData[0]; i++) {
             cards.add(R.drawable.policy_fascist);
         }
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6 - gameData[1]; i++) {
             cards.add(R.drawable.policy_liberal);
         }
         Collections.shuffle(cards);
@@ -289,11 +294,18 @@ public class Game extends AppCompatActivity {
             }
             System.out.println("Fascist policies passed: " + gameData[0]);
             System.out.println("liberal policies passed: " + gameData[1]);
-            Bundle idPassed = new Bundle();
-            idPassed.putInt("card", drawn.get(0));
-            Fragment passedPolicyFragment = new PassedPolicyFragment();
-            passedPolicyFragment.setArguments(idPassed);
-            replaceCurrentFragment(passedPolicyFragment, "fragment_container");
+
+            if(gameData[0] >= 6){
+                gameOver("fascists");
+            } else if(gameData[1] >= 5){
+                gameOver("liberals");
+            } else {
+                Bundle idPassed = new Bundle();
+                idPassed.putInt("card", drawn.get(0));
+                Fragment passedPolicyFragment = new PassedPolicyFragment();
+                passedPolicyFragment.setArguments(idPassed);
+                replaceCurrentFragment(passedPolicyFragment, "fragment_container");
+            }
         }
     }
 
@@ -367,9 +379,52 @@ public class Game extends AppCompatActivity {
     }
 
     private void power_investigate() {
+        Fragment fragment = new Power_InvestigateFragment();
+        ArrayList eligible = new ArrayList();
+        for(Player p: group){
+            if(!p.equals(president)){
+                eligible.add(p);
+            }
+        }
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("players", eligible);
+        fragment.setArguments(bundle);
+        replaceCurrentFragment(fragment, "fragment_container");
+    }
+
+    public void investigatePlayerParty(View view){
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("player", choice);
+        Fragment fragment = new PlayerPartyFragment();
+        fragment.setArguments(bundle);
+        replaceCurrentFragment(fragment, "fragment_container");
     }
 
     private void power_nextPres() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("players", group);
+        Fragment fragment = new Power_ChooseNextPres();
+        fragment.setArguments(bundle);
+        replaceCurrentFragment(fragment, "fragment_container");
+    }
+
+    public void startWithChosenPres(View view){
+        //set next president
+        president = choice;
+
+        //end player turn
+        turnID = 0;
+        drawn.clear();
+        chancellor = null;
+        choice = null;
+        resetVotes();
+
+        //start presidents turn
+        Fragment confirmPlayerFragment = new ConfirmPlayerFragment();
+        Bundle playerData = new Bundle();
+        playerData.putParcelable("playerData", president);
+        confirmPlayerFragment.setArguments(playerData);
+        replaceCurrentFragment(confirmPlayerFragment, "fragment_container");
     }
 
     private void power_kill() {
@@ -377,7 +432,7 @@ public class Game extends AppCompatActivity {
         bundle.putParcelableArrayList("players", group);
         Fragment fragment = new Power_KillPlayerFragment();
         fragment.setArguments(bundle);
-        replaceCurrentFragment(fragment, "fragmentContainer");
+        replaceCurrentFragment(fragment, "fragment_container");
     }
 
     private void power_topThree() {
@@ -390,12 +445,23 @@ public class Game extends AppCompatActivity {
     }
 
     public void removePlayer(View view){
-        group.remove(choice);
-        Bundle player = new Bundle();
-        player.putParcelable("player", choice);
-        Fragment fragment = new KilledPlayerFragment();
-        fragment.setArguments(player);
-        replaceCurrentFragment(fragment, "fragmentContainer");
+        if(choice.getPlayerData()[2].compareTo("Hitler") == 0){
+            gameOver("liberals");
+        } else {
+            group.remove(choice);
+            Bundle player = new Bundle();
+            player.putParcelable("player", choice);
+            Fragment fragment = new KilledPlayerFragment();
+            fragment.setArguments(player);
+            replaceCurrentFragment(fragment, "fragmentContainer");
+        }
     }
 
+    public void gameOver(String winner){
+        Bundle bundle = new Bundle();
+        bundle.putString("winners", winner);
+        Fragment fragment = new GameOverFragment();
+        fragment.setArguments(bundle);
+        replaceCurrentFragment(fragment, "fragment_container");
+    }
 }

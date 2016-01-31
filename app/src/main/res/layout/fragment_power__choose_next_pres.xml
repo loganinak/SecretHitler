@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.secrethitler.Power_ChooseNextPres"
+    android:orientation="vertical"
+    android:id="@+id/linearLayout">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose the next President"
+        android:id="@+id/textView5"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm"
+        android:id="@+id/button5"
+        android:layout_gravity="center_horizontal"
+        android:onClick="startWithChosenPres" />
+</LinearLayout>
