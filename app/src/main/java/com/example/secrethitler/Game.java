@@ -238,6 +238,7 @@ public class Game extends AppCompatActivity {
     private void resetVotes() {
         for (Player p : group) {
             p.setVote(3);
+
         }
     }
 
